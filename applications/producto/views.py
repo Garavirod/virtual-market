@@ -57,20 +57,30 @@ class ProductDeleteView(AlmacenPermisoMixin, DeleteView):
 
 class ProductDetailView(AlmacenPermisoMixin, DetailView):
     template_name = "producto/detail.html"
-    model = Product
+    model = Product #Objeto recuprado por el pk pasado por url
 
+    """ 
+        Todas la vista genéricas tiene el get_context_data 
+        auí se pueden mandar contextos extra hacia el template,
+        los parametros pueden ser recuperados en el diccionario **kwargs        
+    """
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        #
+        context = super().get_context_data(**kwargs) #Extraemos el context_data
+        # Inyectamos un nuevo elemento en el contexto
         context["ventas_mes"] = SaleDetail.objects.ventas_mes_producto(
-            self.kwargs['pk']
+            self.kwargs['pk'] #extraemos el pk del context_data (el cual es pasado por url)
         )
         return context
 
 
 class ProductDetailViewPdf(AlmacenPermisoMixin, View):
-    
+    """ 
+        Considerar instalar el paquete xhtml2pdf para trabajar con ducmentos PDF 
+        además de construir un utils.py el cual se encarte de la conversion de 
+        HTML a PDF
+    """
     def get(self, request, *args, **kwargs):
+        # Sobrescribir el método get
         producto = Product.objects.get(id=self.kwargs['pk'])
         data = {
             'product': producto,

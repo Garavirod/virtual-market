@@ -91,12 +91,12 @@ class ProductDetailViewPdf(AlmacenPermisoMixin, View):
 
 
 class FiltrosProductListView(AlmacenPermisoMixin, ListView):
-    template_name = "producto/filtros.html"
-    context_object_name = 'productos'
-
+    template_name = "producto/filtros.html"    
+    context_object_name = 'productos' # Nombre del diccionario de contexto
+    # sobreescribimos el metodo get_queryset, para mandar datoae en particular
     def get_queryset(self):
-
-        queryset = Product.objects.filtrar(
+        queryset = Product.objects.filtrar( # conectamos el managger filtrar
+            # Obtenemos los parametros url GET sobre los cuales se hará el filtrado
             kword=self.request.GET.get("kword", ''),
             date_start=self.request.GET.get("date_start", ''),
             date_end=self.request.GET.get("date_end", ''),

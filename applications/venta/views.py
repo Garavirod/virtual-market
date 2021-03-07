@@ -60,7 +60,7 @@ class AddCarView(VentasPermisoMixin, FormView):
 """ 
     El view no neceita de un fromulario ni de ningun otro elemento
     solo, intercepta un proceso que hace un metodo post, dentro de ese post
-    se indica el proceso deseado.(AGREGAR NUEVOS DATOS O ACTUALIZAR)
+    se indica el proceso deseado.(CRUD)
 """
 class CarShopUpdateView(VentasPermisoMixin, View):
     """ quita en 1 la cantidad en un carshop """
@@ -77,16 +77,18 @@ class CarShopUpdateView(VentasPermisoMixin, View):
             )
         )
 
-
+""" Elimina un elemento del carrito de compras """
 class CarShopDeleteView(VentasPermisoMixin, DeleteView):
     model = CarShop # Instancia obtenida
     success_url = reverse_lazy('venta_app:venta-index')
 
 
+""" Elimina todos los elementos del carrito de compraas a través de una View genérica """
 class CarShopDeleteAll(VentasPermisoMixin, View):
     
+    # Sobre escribe el metodo post
     def post(self, request, *args, **kwargs):
-        #
+        # Para eliminar un conjunto de datos solo aplicar el delete al query realizao (all, filter.. etc)
         CarShop.objects.all().delete()
         #
         return HttpResponseRedirect(

@@ -22,6 +22,19 @@ from .forms import VentaForm, VentaVoucherForm
 from .functions import procesar_venta
 
 
+
+""" 
+    FORMVIEW
+    Se usa para tratar dataos que no estricatmenete estan basados en un modelo 
+
+    CREATEVIEW
+    Se encarga de tratar datos, caundo los datos estan entereemnte basados ene un modelo
+
+    VIEW
+    cuando solo se necesita hacer un proceoso que inmvolucra alguno de los elementos del 
+    modelo
+"""
+
 class AddCarView(VentasPermisoMixin, FormView):
     """ 
         Usamos from view para hacer procesos internos dentro de una view,

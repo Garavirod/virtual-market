@@ -50,7 +50,7 @@ class AddCarView(VentasPermisoMixin, FormView):
         context["productos"] = CarShop.objects.all()
         context["total_cobrar"] = CarShop.objects.total_cobrar()
         # formulario para venta con voucher
-        context['form_voucher'] = VentaVoucherForm
+        context['form_voucher'] = VentaVoucherForm # se injecta en el contexto un fromulario
         return context
     
     def form_valid(self, form):
@@ -117,7 +117,7 @@ class ProcesoVentaSimpleView(VentasPermisoMixin, View):
     def post(self, request, *args, **kwargs):
         #
         procesar_venta(
-            self=self,
+            self=self, # se pasa el self, solo por buenas prácticas
             type_invoce=Sale.SIN_COMPROBANTE,
             type_payment=Sale.CASH,
             user=self.request.user,

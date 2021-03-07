@@ -57,7 +57,11 @@ class AddCarView(VentasPermisoMixin, FormView):
         return super(AddCarView, self).form_valid(form)
     
 
-
+""" 
+    El view no neceita de un fromulario ni de ningun otro elemento
+    solo, intercepta un proceso que hace un metodo post, dentro de ese post
+    se indica el proceso deseado.(AGREGAR NUEVOS DATOS O ACTUALIZAR)
+"""
 class CarShopUpdateView(VentasPermisoMixin, View):
     """ quita en 1 la cantidad en un carshop """
 
@@ -75,7 +79,7 @@ class CarShopUpdateView(VentasPermisoMixin, View):
 
 
 class CarShopDeleteView(VentasPermisoMixin, DeleteView):
-    model = CarShop
+    model = CarShop # Instancia obtenida
     success_url = reverse_lazy('venta_app:venta-index')
 
 

@@ -172,8 +172,8 @@ class SaleDetailManager(models.Manager):
 class CarShopManager(models.Manager):
     """ procedimiento modelo Carrito de compras """
     
-    def total_cobrar(self):
-        
+    # self hace referencia a todmar todos los elemetnos del modelo que ese esta trabajando
+    def total_cobrar(self):         
         consulta = self.aggregate(
             total=Sum(
                 F('count')*F('product__sale_price'),

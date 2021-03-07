@@ -139,7 +139,7 @@ class ProcesoVentaVoucherView(VentasPermisoMixin, FormView):
         type_invoce = form.cleaned_data['type_invoce']
         #
         venta = procesar_venta(
-            self=self,
+            self=self, # se pasa el self, solo por buenas prácticas
             type_invoce=type_invoce,
             type_payment=type_payment,
             user=self.request.user,

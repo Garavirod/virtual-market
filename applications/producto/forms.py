@@ -34,7 +34,7 @@ class ProductForm(forms.ModelForm):
                 }
             ),
             'due_date': forms.DateInput(
-                format='%Y-%m-%d', #formato obligatorio cuando se trabaja con fechas en fromualrios
+                format='%Y-%m-%d',
                 attrs = {
                     'type': 'date',
                     'class': 'input-group-field',

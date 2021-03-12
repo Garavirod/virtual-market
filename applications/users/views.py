@@ -114,3 +114,4 @@ class UserListView(ListView):
 
     def get_queryset(self):
         return User.objects.usuarios_sistema()
+    

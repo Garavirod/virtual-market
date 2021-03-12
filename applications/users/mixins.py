@@ -67,3 +67,4 @@ class AdminPermisoMixin(LoginRequiredMixin):
                 )
             )
         return super().dispatch(request, *args, **kwargs)
+        

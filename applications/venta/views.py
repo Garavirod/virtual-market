@@ -22,35 +22,17 @@ from .forms import VentaForm, VentaVoucherForm
 from .functions import procesar_venta
 
 
-
-""" 
-    FORMVIEW
-    Se usa para tratar dataos que no estricatmenete estan basados en un modelo 
-
-    CREATEVIEW
-    Se encarga de tratar datos, caundo los datos estan entereemnte basados ene un modelo
-
-    VIEW
-    cuando solo se necesita hacer un proceoso que inmvolucra alguno de los elementos del 
-    modelo
-"""
-
 class AddCarView(VentasPermisoMixin, FormView):
-    """ 
-        Usamos from view para hacer procesos internos dentro de una view,
-        estrictamente se sobreescribe el método form_valid
-        para verificar su valides antes de mandar la infromacion
-    """
     template_name = 'venta/index.html'
     form_class = VentaForm
-    success_url = '.' #redirijimos a la misma pagina
+    success_url = '.'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["productos"] = CarShop.objects.all()
         context["total_cobrar"] = CarShop.objects.total_cobrar()
         # formulario para venta con voucher
-        context['form_voucher'] = VentaVoucherForm # se injecta en el contexto un fromulario
+        context['form_voucher'] = VentaVoucherForm
         return context
     
     def form_valid(self, form):
@@ -70,11 +52,7 @@ class AddCarView(VentasPermisoMixin, FormView):
         return super(AddCarView, self).form_valid(form)
     
 
-""" 
-    El view no neceita de un fromulario ni de ningun otro elemento
-    solo, intercepta un proceso que hace un metodo post, dentro de ese post
-    se indica el proceso deseado.(CRUD)
-"""
+
 class CarShopUpdateView(VentasPermisoMixin, View):
     """ quita en 1 la cantidad en un carshop """
 
@@ -90,18 +68,16 @@ class CarShopUpdateView(VentasPermisoMixin, View):
             )
         )
 
-""" Elimina un elemento del carrito de compras """
+
 class CarShopDeleteView(VentasPermisoMixin, DeleteView):
-    model = CarShop # Instancia obtenida
+    model = CarShop
     success_url = reverse_lazy('venta_app:venta-index')
 
 
-""" Elimina todos los elementos del carrito de compraas a través de una View genérica """
 class CarShopDeleteAll(VentasPermisoMixin, View):
     
-    # Sobre escribe el metodo post
     def post(self, request, *args, **kwargs):
-        # Para eliminar un conjunto de datos solo aplicar el delete al query realizao (all, filter.. etc)
+        #
         CarShop.objects.all().delete()
         #
         return HttpResponseRedirect(
@@ -117,7 +93,7 @@ class ProcesoVentaSimpleView(VentasPermisoMixin, View):
     def post(self, request, *args, **kwargs):
         #
         procesar_venta(
-            self=self, # se pasa el self, solo por buenas prácticas
+            self=self,
             type_invoce=Sale.SIN_COMPROBANTE,
             type_payment=Sale.CASH,
             user=self.request.user,
@@ -139,7 +115,7 @@ class ProcesoVentaVoucherView(VentasPermisoMixin, FormView):
         type_invoce = form.cleaned_data['type_invoce']
         #
         venta = procesar_venta(
-            self=self, # se pasa el self, solo por buenas prácticas
+            self=self,
             type_invoce=type_invoce,
             type_payment=type_payment,
             user=self.request.user,
@@ -198,3 +174,4 @@ class SaleDeleteView(VentasPermisoMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
     
+

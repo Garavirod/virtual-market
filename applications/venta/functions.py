@@ -19,10 +19,10 @@ def procesar_venta(self, **params_venta):
             amount=0,
             type_invoce=params_venta['type_invoce'],
             type_payment=params_venta['type_payment'],
-            user=params_venta['user'], # vendedor que registra la venta
+            user=params_venta['user'],
         )
         #
-        ventas_detalle = [] # collecot de los obj's SaleDetail
+        ventas_detalle = []
         productos_en_venta = []
         for producto_car in productos_en_car:
             venta_detalle = SaleDetail(
@@ -45,9 +45,9 @@ def procesar_venta(self, **params_venta):
             venta.amount = venta.amount + producto_car.count*producto_car.product.sale_price
 
         venta.save()
-        SaleDetail.objects.bulk_create(ventas_detalle) # El bulk create crea elementos en base a una lista (EL ORM se encarga)
+        SaleDetail.objects.bulk_create(ventas_detalle)
         # actualizamos el stok
-        Product.objects.bulk_update(productos_en_venta, ['count', 'num_sale']) # 
+        Product.objects.bulk_update(productos_en_venta, ['count', 'num_sale'])
         # completada la venta, eliminamos productos delc arrito
         productos_en_car.delete()
         return venta

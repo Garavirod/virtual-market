@@ -1,101 +1,125 @@
+# third-party
+from model_utils.models import TimeStampedModel
+# Django
 from django.db import models
-from django.conf import settings
-
-# Managers
+# local
 from .managers import ProductManager
 
-
-#
-from model_utils.models import TimeStampedModel
-
-"""
-    To create a backup no matter SGBD
-    python manage.py dumpdata > name_cpy.json
-    this creates a python dictinary with data
-
-
-    If you want to use the data previusly created or backed up
-    paste the data.json in the sema level where is manage.py file,
-    then type:
-
-    python manage loaddata data_file_name.json
-
-"""
-
-
-class Colors(models.Model):
-    """ Representa color de un producto """
-
-    color = models.CharField(
-        'Tag', 
-        max_length=120, 
-        unique=True
-    )
-    #
-
-    class Meta:
-        verbose_name = 'Color Producto'
-        verbose_name_plural = 'Colores'
-
-    def __str__(self):
-        return str(self.id) + ' - ' + str(self.color)
-
-
-class Product(TimeStampedModel):
-    """Modelo que representa a un producto de tienda"""
+class Marca(TimeStampedModel):
+    """
+        Marca de un producto
+    """
 
     name = models.CharField(
         'Nombre', 
+        max_length=30
+    )
+
+    class Meta:
+        verbose_name = 'Marca'
+        verbose_name_plural = 'Marcas'
+
+    def __str__(self):
+        return self.name
+
+
+class Provider(TimeStampedModel):
+    """
+        Proveedore de Producto
+    """
+
+    name = models.CharField(
+        'Razon Social', 
         max_length=100
     )
+    email = models.EmailField(
+        blank=True, 
+        null=True
+    )
+    phone = models.CharField(
+        'telefonos',
+        max_length=40,
+        blank=True,
+    )
+    web = models.URLField(
+        'sitio web',
+        blank=True,
+    )
+
+
+    class Meta:
+        verbose_name = 'Proveedor'
+        verbose_name_plural = 'Proveedores'
+
+    def __str__(self):
+        return self.name
+
+
+class Product(TimeStampedModel):
+    """
+        Producto
+    """
+
+    UNIT_CHOICES = (
+        ('0', 'Kilogramos'),
+        ('1', 'Litros'),
+        ('2', 'Unidades'),
+    )
+
+    barcode = models.CharField(
+        max_length=13,
+        unique=True
+    )
+    name = models.CharField(
+        'Nombre', 
+        max_length=40
+    )
+    provider = models.ForeignKey(
+        Provider, 
+        on_delete=models.CASCADE
+    )
+    marca = models.ForeignKey(
+        Marca, 
+        on_delete=models.CASCADE
+    )
+    due_date = models.DateField(
+        'fehca de vencimiento',
+        blank=True, 
+        null=True
+    )
     description = models.TextField(
-        'Descripcion producto',
-        blank=True
+        'descripcion del producto',
+        blank=True,
     )
-    man = models.BooleanField(
-        'Para Hombre', 
-        default=True
-    ) # es solo para mujer 
-    woman = models.BooleanField(
-        'Para Mujer', 
-        default=True
-    ) # es para varon
-    weight = models.DecimalField(
-        'Peso', 
-        max_digits=5, 
-        decimal_places=2, 
-        default=1
+    unit = models.CharField(
+        'unidad de medida',
+        max_length=1,
+        choices=UNIT_CHOICES, 
     )
-    price_purchase = models.DecimalField(
-        'Precio de Compra',
-        max_digits=10,
-        decimal_places=3
+    count = models.PositiveIntegerField(
+        'cantidad en almacen',
+        default=0
     )
-    price_sale = models.DecimalField(
-        'Precio de Venta',
-        max_digits=10,
+    purchase_price = models.DecimalField(
+        'precio compra',
+        max_digits=7, 
         decimal_places=2
     )
-    main_image = models.ImageField(
-        'imagen principal',
-        upload_to='producto',
-    ) # imagen principal del producto
-    image1 = models.ImageField('Imagen 1', blank=True, null=True, upload_to='producto')
-    image2 = models.ImageField('Imagen 2', blank=True, null=True, upload_to='producto')
-    image3 = models.ImageField('Imagen 3', blank=True, null=True, upload_to='producto')
-    image4 = models.ImageField('Imagen 4', blank=True, null=True, upload_to='producto')
-    colors = models.ManyToManyField(Colors)
-    video = models.URLField('unboxin', blank=True, null=True)
-    stok = models.PositiveIntegerField('Stok', default=0)
-    num_sales = models.PositiveIntegerField('Veces vendido', default=0)
-    user_created = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="prod_created",
+    sale_price = models.DecimalField(
+        'precio venta',
+        max_digits=7, 
+        decimal_places=2
+    )
+    num_sale = models.PositiveIntegerField(
+        'numero de ventas',
+        default=0
+    )
+    anulate = models.BooleanField(
+        'eliminado',
+        default=False
     )
 
-
-    # Conetcting the manager
+    #
     objects = ProductManager()
 
     class Meta:
@@ -103,4 +127,8 @@ class Product(TimeStampedModel):
         verbose_name_plural = 'Productos'
 
     def __str__(self):
-        return str(self.id) + ' ' + str(self.name)
+        return self.name
+
+
+
+

@@ -81,15 +81,12 @@ class SaleDetailManager(models.Manager):
     def ventas_mes_producto(self, id_prod):
         # creamos rango de fecha
         end_date = timezone.now()
-        # para restar fechas (en formato dias) usaasmo libreri e python timedelta
         start_date = end_date - timedelta(days=30)
         
         consulta = self.filter(
-            sale__anulate=False, # Donde la vernta no haya sido anulada
-            created__range=(start_date, end_date), # Lapso de feacha en 30 dias en formato (campo__range)
-            product__pk=id_prod, # id del producto
-            # Para capturar los acumulados usamos el .values el cual aplicara un group_by
-            # Dentro del .values se pueden hacer op aritméticas de ahi el uso del .annotate
+            sale__anulate=False,
+            created__range=(start_date, end_date),
+            product__pk=id_prod,
         ).values('sale__date_sale__date', 'product__name').annotate(
             cantidad_vendida=Sum('count'),
         )
@@ -172,8 +169,8 @@ class SaleDetailManager(models.Manager):
 class CarShopManager(models.Manager):
     """ procedimiento modelo Carrito de compras """
     
-    # self hace referencia a todmar todos los elemetnos del modelo que ese esta trabajando
-    def total_cobrar(self):         
+    def total_cobrar(self):
+        
         consulta = self.aggregate(
             total=Sum(
                 F('count')*F('product__sale_price'),

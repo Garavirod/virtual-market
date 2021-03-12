@@ -38,7 +38,13 @@ DJANGO_APPS = (
 )
 
 """ Aplicaciones locales """
-LOCAL_APPS = ()
+LOCAL_APPS = (
+    'applications.users',
+    'applications.home',
+    'applications.producto',
+    'applications.venta',
+    'applications.caja',
+)
 
 """ Aplicaciones de terceros """
 THIRD_PARRTY_APPS = ()
